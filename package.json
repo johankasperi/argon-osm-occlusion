@@ -1,0 +1,32 @@
+{
+  "name": "argon-osm-occlusion",
+  "version": "0.0.1",
+  "description": "Occlusion handling using OpenStreetMap building data in an Argonjs environment.",
+  "main": "lib/OcclusionObjectManager.js",
+  "scripts": {
+    "build": "babel src --out-file lib/argon-osm-occlusion.js",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johankasperi/argon-osm-occlusion.git"
+  },
+  "keywords": [
+    "Argon.js",
+    "OSM",
+    "Augmented",
+    "Reality",
+    "Javascript",
+    "ES6"
+  ],
+  "author": "Johan Kasperi <johan@kasperi.se>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/johankasperi/argon-osm-occlusion/issues"
+  },
+  "homepage": "https://github.com/johankasperi/argon-osm-occlusion#readme",
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0"
+  }
+}

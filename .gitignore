@@ -1,0 +1,6 @@
+# npm
+lib/
+node_modules/
+
+# OS Stuff
+.DS_Store

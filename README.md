@@ -1,7 +1,7 @@
 argon-osm-occlusion
 ============
 
-Adds [OSM building data](http://wiki.openstreetmap.org/wiki/Buildings) to [Argon.js](http://argonjs.io/) for occlusion with real world buildings. This module queries the [Overpass API](http://overpass-turbo.eu/) for OSM building data, it then converts it to transparent Threejs meshes and adds it to your Argonjs scene.
+Adds [OSM building data](http://wiki.openstreetmap.org/wiki/Buildings) to [argon.js](http://argon.js.io/) for occlusion with real world buildings. This module queries the [Overpass API](http://overpass-turbo.eu/) for OSM building data, it then converts it to transparent three.js meshes and adds it to your argon.js scene.
 
 Status
 -----
@@ -29,7 +29,7 @@ argonOsmOcclusion.add({
   latitude: 18.073780
 });
 ```
-Then you edit the renderOrder property of your Three Objects you wish to be affected by the occlusion:
+Then you edit the renderOrder property of your three.js objects you wish to be affected by the occlusion:
 ```javascript
 var mesh = new THREE.Mesh(geometry, material)
 mesh.renderOrder = 2
@@ -39,12 +39,12 @@ Meshes with renderOrder < 1 (0 is default) will not be affected by this occlusio
 API
 -----
 
-### `ArgonOsmOcclusion( app, scene )`
+### `ArgonOsmOcclusion(app, scene)`
 
 The main class for handling all occlusion,
 
-* `app`: Your Argonjs app.
-* `scene`: Your Threejs scene.
+* `app`: Your argon.js app.
+* `scene`: Your three.js scene.
 
 ### Properties
 
@@ -57,13 +57,13 @@ Array of all feature groups added to the scene. A feature group has the properti
 * `altitude`: Altitude of the added buildings.
 * `radius`: Radius of the bounding circle.
 * `features`: Array of all the buildings containing its geolocation data.
-* `geoObjects`: Array of all the Three objects created from the OSM data, i.e. all the buildings in this bounding circle.
+* `geoObjects`: Array of all the three.js objects created from the OSM data, i.e. all the buildings in this bounding circle.
 * `geoEntities`: Array of all the Argon.Cesium.Entity created for each building.
 
 ### Methods
 
 ##### `add(options, callback)`
-Queries the Overpass API for OSM building features, converts them to Threejs meshes and adds them to the scene.
+Queries the Overpass API for OSM building features, converts them to three.js meshes and adds them to the scene.
 
 * `options`: This method takes to following options:
   * `longitude`: Float. Longitude of the bounding circle center used when querying the Overpass API. Required.
@@ -86,7 +86,7 @@ argonOsmOcclusion.add({
 ```
 
 #### `remove(id)`
-Removes all Threejs objects associated with the provided feature group id from the scene.
+Removes all three.js objects associated with the provided feature group id from the scene.
 
 * `id`: Int. Id of the feature group to be removed.
 
@@ -94,7 +94,7 @@ Removes all Threejs objects associated with the provided feature group id from t
 Removes all feature groups from the scene.
 
 #### `setDebug(debug)`
-If debug is true it make all added Threejs buildings opaque (with a blue color) for debugging purposes. If false it will make them transparent again.
+If debug is true it make all added three.js buildings opaque (with a blue color) for debugging purposes. If false it will make them transparent again.
 
 * `debug`: Bool.
 
@@ -102,10 +102,10 @@ To do
 -----
 * Support for more advanced roof shapes. Currently is all roofs flat. (see [OSM-4D/Roof table](http://wiki.openstreetmap.org/wiki/OSM-4D/Roof_table))
 * Performance testing.
-* Method for setting the fallback of the "building:levels" property. Many buildings in OSM don't have any "building:levels" property reported. And it's this property who determines the height of the Threejs objects added to the scene. The current fallback is 3 levels. Read more at [Key:building:levels](http://wiki.openstreetmap.org/wiki/Key:building:levels)
+* Method for setting the fallback of the "building:levels" property. Many buildings in OSM don't have any "building:levels" property reported. And it's this property who determines the height of the three.js objects added to the scene. The current fallback is 3 levels. Read more at [Key:building:levels](http://wiki.openstreetmap.org/wiki/Key:building:levels)
 
 Author
 -----
-Johan Kasperi
-[kspri.se](http://kspri.se)
+Johan Kasperi<br>
+[kspri.se](http://kspri.se)<br>
 Part of my Master Thesis at the [Royal Institute of Technology](http://kth.se)

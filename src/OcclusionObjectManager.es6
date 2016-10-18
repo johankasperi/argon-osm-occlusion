@@ -1,46 +1,55 @@
-import THREE from 'three'
+import * as THREE from 'three'
 import * as Argon from '@argonjs/argon'
-import { query_overpass } from 'QueryOverpass'
 
-export default class OcclusionObjectManager {
+var app, scene;
+export default class ArgonOsmOcclusion {
 
     /**
      * @constructor
      * @param {app} Argon app
      * @param {scene} THREE scene
      */
-    constructor(app, scene) {
-      this.app = app
-      this.scene = scene
+    constructor(_app, _scene) {
+      app = _app
+      scene = _scene
+
+      this.debugMode = false
       this.featureGroups = []
-      this.hasNewFeatureGroup = false
 
       // Bind this to methods
       this.add.bind(this)
       this.remove.bind(this)
       this.removeAll.bind(this)
+      this.setDebug.bind(this)
 
-      this.addListeners()
+      app.updateEvent.addEventListener(this.update.bind(this))
     }
 
     /**
      * @method
      * @name add
      * @description Function for adding occlusion with real world buildings from OSM around coordinate
-     * @param {lng} Coordinate longitude
-     * @param {lat} Coordinate latitude
-     * @param {alt} Altitude of the added objects
-     * @param {r} Radius of bounding circle when querying for OSM features.
+     * @param {options} Options
+     *        {longitude} Coordinate longitude
+     *        {latitude} Coordinate latitude
+     *        {altitude} Altitude of the added objects. Default 0. Optional.
+     *        {radius} Radius of bounding circle when querying for OSM features. Default 500 m. Optional
+     *        {name} Name of this feature group. Optional.
      * @param {callback} Callback with id of the feature group or error. Optional.
      */
-    add(lng, lat, alt, r, callback) {
-      if(lng == null || lat == null || alt == null || r == null) {
-        return callback({
-          message: "Wrong params provided to method. Lng, lat, alt, r required."
-        })
+    add(options, callback) {
+      if(options.longitude == null || options.latitude == null) {
+        if(callback) {
+          callback({
+            message: "Wrong params provided to method. Lng, lat, alt, r required."
+          })
+        }
+        return
       }
+      options.altitude = options.altitude != null ? options.altitude : 0
+      options.radius = options.radius != null ? options.radius : 500
 
-      var boundingCircle = '(around:'+r+','+lat+','+lng+')'
+      var boundingCircle = '(around:'+options.radius+','+options.latitude+','+options.longitude+')'
       var query = '[out:json];(way["building"]'+boundingCircle+';relation["building"]'+boundingCircle+';);out body;>;out skel qt;'
       query_overpass(query, function(error, data) {
         if(error) {
@@ -51,18 +60,23 @@ export default class OcclusionObjectManager {
         }
         var features = []
         data.features.forEach(function(osmFeature) {
-          features.push(createFeatureEntities(osmFeature, alt))
+          features.push(createFeatureEntities(osmFeature, options.altitude))
         })
         var featureGroup = {
           id: this.featureGroups.length,
+          name: options.name,
+          longitude: options.longitude,
+          latitude: options.latitude,
+          altitude: options.altitude,
+          radius: options.radius,
           features: features,
           geoObjects: [],
           geoEntities: []
         }
         this.featureGroups.push(featureGroup)
-        this.hasNewFeatureGroup = true
-
-        return callback(undefined, featureGroup.id)
+        if(callback) {
+          callback(undefined, featureGroup.id)
+        }
       }.bind(this))
     }
 
@@ -74,10 +88,15 @@ export default class OcclusionObjectManager {
      */
      remove(id) {
        var featureGroups = this.featureGroups.filter(function(group) { return group.id === id })
-       featureGroup[0].geoObjects.forEach(function(obj) {
-         this.scene.remove(obj);
-       }.bind(this))
-       this.featureGroups = this.featureGroups.filter(function(group) { return group.is !== id })
+       console.log(featureGroups)
+       if(featureGroups[0] != null) {
+         featureGroups[0].geoObjects.forEach(function(obj) {
+           scene.remove(obj);
+         }.bind(this))
+         this.featureGroups = this.featureGroups.filter(function(group) { return group.is !== id })
+       } else {
+         console.log("ArgonOsmOcclusion: Cannot remove feature group with id "+id+", it does not exist.")
+       }
      }
 
     /**
@@ -86,19 +105,25 @@ export default class OcclusionObjectManager {
      * @description Function for removing all occlusion objects in scene
      */
     removeAll() {
-      this.hasNewFeatureGroup = false
       var temp = this.featureGroups
       temp.forEach(function(group) {
-        group.remove(group)
+        this.remove(group.id)
       }.bind(this))
     }
 
     /**
      * @method
-     * @name addListeners
+     * @name setDebug
+     * @description Shows/hides all the OSM buildings in the scene
+     * @param {debug} Bool
      */
-    addListeners() {
-      this.app.updateEvent.addEventListener(this.update.bind(this))
+    setDebug(debug) {
+      this.debugMode = debug
+      this.featureGroups.forEach(function(group) {
+        group.geoObjects.forEach(function(geoObject) {
+          geoObject.children[0].material.colorWrite = debug
+        })
+      })
     }
 
     /**
@@ -107,26 +132,23 @@ export default class OcclusionObjectManager {
      * @description Triggered on every Argon UpdateEvent
      */
     update() {
-      if(this.hasNewFeatureGroup) {
-        this.featureGroups.forEach(function(group) {
+      this.featureGroups.forEach(function(group) {
+        if(group.geoObjects.length < group.features.length) {
           group.features.forEach(function(feature) {
             if(feature.hasCreatedGeometry == false) {
-              var result = createGeometry(feature, this.app.context)
+              var result = createGeometry(feature, this.debugMode, app.context, scene)
               if(result !== null) {
                 group.geoEntities.push(result.geoEntity)
                 group.geoObjects.push(result.geoObject)
-                this.scene.add(result.geoObject)
               }
             }
           }.bind(this))
-        }.bind(this))
-      }
-
-      this.featureGroups.forEach(function(group) {
-        group.geoEntities.forEach(function(geoEntity, index) {
-          var targetPose = this.app.context.getEntityPose(geoEntity)
-          group.geoObjects[index].position.copy(targetPose.position)
-        }.bind(this))
+        } else {
+          group.geoEntities.forEach(function(geoEntity, index) {
+            var targetPose = app.context.getEntityPose(geoEntity)
+            group.geoObjects[index].position.copy(targetPose.position)
+          }.bind(this))
+        }
       }.bind(this))
     }
 
@@ -163,7 +185,7 @@ function createFeatureEntities(osmFeature, alt) {
     }
   })
 
-  var levels = 2
+  var levels = 3
   if (osmFeature.properties.tags['building:levels']) {
     levels = parseInt(osmFeature.properties.tags['building:levels'])
   }
@@ -182,13 +204,13 @@ function getVertices(entites, context) {
     if(geoPos.poseStatus == 0) {
       return;
     }
-    var v0 = new THREE.Vector2(geoPos.position.x, geoPos.position.z);
-    vertices.push(v0);
+    var v = new THREE.Vector2(geoPos.position.x, geoPos.position.z);
+    vertices.push(v);
   })
   return vertices;
 }
 
-function createGeometry(feature, context) {
+function createGeometry(feature, debug, context, scene) {
   var vertices = getVertices(feature.shape, context);
   if(vertices.length == 0) {
     return null
@@ -208,15 +230,16 @@ function createGeometry(feature, context) {
   geometry.applyMatrix( new THREE.Matrix4().makeTranslation( -geometry.vertices[0].x, geometry.vertices[0].y, -geometry.vertices[0].z ) )
 
   var material = new THREE.MeshPhongMaterial({
-    color: 0x156289,
-    emissive: 0x072534,
+    color: 0x0000ff,
+    colorWrite: debug,
     side: THREE.DoubleSide,
     shading: THREE.FlatShading
   });
   var mesh = new THREE.Mesh( geometry, material )
-
+  mesh.renderOrder = 1
   var geoObject = new THREE.Object3D()
   geoObject.add(mesh)
+  scene.add(geoObject)
 
   var geoEntity = new Argon.Cesium.Entity({
       name: "",

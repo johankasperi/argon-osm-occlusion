@@ -1,8 +1,8 @@
 {
   "name": "argon-osm-occlusion",
-  "version": "0.0.1",
-  "description": "Occlusion handling using OpenStreetMap building data in an Argonjs environment.",
-  "main": "lib/OcclusionObjectManager.js",
+  "version": "0.0.2",
+  "description": "Occlusion handling using OpenStreetMap building data in an Argon.js environment.",
+  "main": "lib/argon-osm-occlusion.js",
   "scripts": {
     "build": "babel src --out-file lib/argon-osm-occlusion.js",
     "prepublish": "npm run build"

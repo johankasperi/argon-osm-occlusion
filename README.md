@@ -62,7 +62,7 @@ Array of all feature groups added to the scene. A feature group has the properti
 
 ### Methods
 
-##### `add(options, callback)`
+#### `add(options, callback)`
 Queries the Overpass API for OSM building features, converts them to three.js meshes and adds them to the scene.
 
 * `options`: This method takes to following options:

@@ -96,7 +96,7 @@ Removes all feature groups from the scene.
 #### `setDebug(debug)`
 If debug is true it make all added Threejs buildings opaque (with a blue color) for debugging purposes. If false it will make them transparent again.
 
-* ´debug´: Bool.
+* `debug`: Bool.
 
 To do
 -----

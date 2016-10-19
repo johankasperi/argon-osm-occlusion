@@ -1,7 +1,7 @@
 argon-osm-occlusion
 ============
 
-Adds [OSM building data](http://wiki.openstreetmap.org/wiki/Buildings) to [argon.js](http://argonjs.io/) for occlusion with real world buildings. This module queries the [Overpass API](http://overpass-turbo.eu/) for OSM building data, it then converts it to transparent three.js meshes and adds it to your argon.js scene.
+Adds [OSM building data](http://wiki.openstreetmap.org/wiki/Buildings) to [argon.js](http://argonjs.io/) for occlusion with real world buildings. This module queries the [Overpass API](http://wiki.openstreetmap.org/wiki/Overpass_API) for OSM building data, it then converts it to transparent three.js meshes and adds it to your argon.js scene.
 
 Status
 -----

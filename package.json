@@ -1,6 +1,6 @@
 {
   "name": "argon-osm-occlusion",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Occlusion handling using OpenStreetMap building data in an Argon.js environment.",
   "main": "lib/argon-osm-occlusion.js",
   "scripts": {
@@ -32,6 +32,6 @@
   "dependencies": {
     "@argonjs/argon": "^1.0.0",
     "osmtogeojson": "^2.2.12",
-    "three": "^0.81.2"
+    "three": "~0.76.1"
   }
 }

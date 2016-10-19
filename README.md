@@ -65,7 +65,7 @@ Array of all feature groups added to the scene. A feature group has the properti
 #### `add(options, callback)`
 Queries the Overpass API for OSM building features, converts them to three.js meshes and adds them to the scene.
 
-* `options`: This method takes to following options:
+* `options`: This method takes the following options:
   * `longitude`: Float. Longitude of the bounding circle center used when querying the Overpass API. Required.
   * `latitude`: Float. Latitude of the bounding circle center used when querying the Overpass API. Required.
   * `altitude`: Float. Altitude (in meters) above the ellipsoid of the added buildings. Default 0. Optional.

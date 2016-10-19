@@ -3,8 +3,14 @@ import request from 'request';
 
 export function query_overpass(query, cb, options) {
     options = options || {};
+    var defaultUrl;
+    if(window.location.protocol === 'https:') {
+      defaultUrl = 'https://overpass-api.de:443/api/interpreter'
+    } else {
+      defaultUrl = 'http://overpass-api.de:80/api/interpreter'
+    }
     request.post({
-      uri: options.overpassUrl || 'http://overpass-api.de/api/interpreter',
+      url: options.overpassUrl || defaultUrl,
       withCredentials: false
     }, function (error, response, body) {
         var geojson;

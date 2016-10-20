@@ -113,6 +113,32 @@ export default class ArgonOsmOcclusion {
 
     /**
      * @method
+     * @name enable
+     * @description Enables all buildings in the scene
+     */
+    enable() {
+      this.featureGroups.forEach(function(group) {
+        group.geoObjects.forEach(function(object) {
+          object.visible = true
+        })
+      })
+    }
+
+    /**
+     * @method
+     * @name disable
+     * @description Disables all buildings in the scene
+     */
+    disable() {
+      this.featureGroups.forEach(function(group) {
+        group.geoObjects.forEach(function(object) {
+          object.visible = false
+        })
+      })
+    }
+
+    /**
+     * @method
      * @name setDebug
      * @description Shows/hides all the OSM buildings in the scene
      * @param {debug} Bool

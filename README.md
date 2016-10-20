@@ -93,6 +93,16 @@ Removes all three.js objects associated with the provided feature group id from 
 #### `removeAll()`
 Removes all feature groups from the scene.
 
+#### `disable(id)`
+Disables (hides) all three.js objects associated with the provided feature group id from the scene.
+
+* `id`: Int. Id of the feature group to be removed.
+
+#### `enable(id)`
+Enables (shows) all three.js objects associated with the provided feature group id from the scene.
+
+* `id`: Int. Id of the feature group to be removed.
+
 #### `setDebug(debug)`
 If debug is true it make all added three.js buildings opaque (with a blue color) for debugging purposes. If false it will make them transparent again.
 

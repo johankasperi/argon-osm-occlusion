@@ -71,6 +71,7 @@ Queries the Overpass API for OSM building features, converts them to three.js me
   * `altitude`: Float. Altitude (in meters) above the ellipsoid of the added buildings. Default 0. Optional.
   * `radius`: Float. The radius (in meters) of the bounding circle. All buildings within this radius from the longitude/latitude coordinate will be added to the scene. Default 500. Optional.
   * `name`: String. Name of this feature group. Default null. Optional.
+  * `levels`: Fallback for the "building:levels" property. Many buildings in OSM don't have any "building:levels" property reported. And it's this property who determines the height of the three.js objects added to the scene. Read more at [Key:building:levels](http://wiki.openstreetmap.org/wiki/Key:building:levels). Default 3. Optional.
 * `callback`: Function. Callback returning either error or the id of the created feature group. Optional. Example:
 ```javascript
 argonOsmOcclusion.add({
@@ -112,7 +113,6 @@ To do
 -----
 * Support for more advanced roof shapes. Currently is all roofs flat. (see [OSM-4D/Roof table](http://wiki.openstreetmap.org/wiki/OSM-4D/Roof_table))
 * Performance testing.
-* Method for setting the fallback of the "building:levels" property. Many buildings in OSM don't have any "building:levels" property reported. And it's this property who determines the height of the three.js objects added to the scene. The current fallback is 3 levels. Read more at [Key:building:levels](http://wiki.openstreetmap.org/wiki/Key:building:levels)
 
 Author
 -----

@@ -35,6 +35,7 @@ export default class ArgonOsmOcclusion {
      *        {altitude} Altitude of the added objects. Default 0. Optional.
      *        {radius} Radius of bounding circle when querying for OSM features. Default 500 m. Optional
      *        {name} Name of this feature group. Optional.
+     *        {levels} Fallback number of levels if tag is not available on feature in Overpass API. Optional.
      * @param {callback} Callback with id of the feature group or error. Optional.
      */
     add(options, callback) {
@@ -48,7 +49,8 @@ export default class ArgonOsmOcclusion {
       }
       options.altitude = options.altitude != null ? options.altitude : 0
       options.radius = options.radius != null ? options.radius : 500
-
+      options.levels = options.levels != null ? options.levels : 3
+      
       var boundingCircle = '(around:'+options.radius+','+options.latitude+','+options.longitude+')'
       var query = '[out:json];(way["building"]'+boundingCircle+';relation["building"]'+boundingCircle+';);out body;>;out skel qt;'
       query_overpass(query, function(error, data) {
@@ -60,7 +62,7 @@ export default class ArgonOsmOcclusion {
         }
         var features = []
         data.features.forEach(function(osmFeature) {
-          features.push(createFeatureEntities(osmFeature, options.altitude))
+          features.push(createFeatureEntities(osmFeature, options.altitude, options.levels))
         })
         var featureGroup = {
           id: this.featureGroups.length,
@@ -69,6 +71,7 @@ export default class ArgonOsmOcclusion {
           latitude: options.latitude,
           altitude: options.altitude,
           radius: options.radius,
+          levels: options.levels,
           features: features,
           geoObjects: [],
           geoEntities: []
@@ -180,7 +183,7 @@ export default class ArgonOsmOcclusion {
 
 }
 
-function createFeatureEntities(osmFeature, alt) {
+function createFeatureEntities(osmFeature, alt, levelsFallback) {
   if (osmFeature.geometry.type !== "Polygon") {
     return;
   }
@@ -211,7 +214,7 @@ function createFeatureEntities(osmFeature, alt) {
     }
   })
 
-  var levels = 3
+  var levels = levelsFallback
   if (osmFeature.properties.tags['building:levels']) {
     levels = parseInt(osmFeature.properties.tags['building:levels'])
   }

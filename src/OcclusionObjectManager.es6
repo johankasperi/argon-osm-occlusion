@@ -50,7 +50,7 @@ export default class ArgonOsmOcclusion {
       options.altitude = options.altitude != null ? options.altitude : 0
       options.radius = options.radius != null ? options.radius : 500
       options.levels = options.levels != null ? options.levels : 3
-      
+
       var boundingCircle = '(around:'+options.radius+','+options.latitude+','+options.longitude+')'
       var query = '[out:json];(way["building"]'+boundingCircle+';relation["building"]'+boundingCircle+';);out body;>;out skel qt;'
       query_overpass(query, function(error, data) {
@@ -91,7 +91,6 @@ export default class ArgonOsmOcclusion {
      */
      remove(id) {
        var featureGroups = this.featureGroups.filter(function(group) { return group.id === id })
-       console.log(featureGroups)
        if(featureGroups[0] != null) {
          featureGroups[0].geoObjects.forEach(function(obj) {
            scene.remove(obj);

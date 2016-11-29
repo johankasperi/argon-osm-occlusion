@@ -6,9 +6,9 @@ Adds [OSM building data](http://wiki.openstreetmap.org/wiki/Buildings) to [argon
 Demo
 -----
 ##### Occlusion deactivated
-![alt tag](https://raw.github.com/johankasperi/argon-osm-occlusion/master/demo_deactivated.jpg)
+<img src="https://raw.github.com/johankasperi/argon-osm-occlusion/master/demo_deactivated.jpg" width="30%"></img>
 ##### Occlusion activated
-![alt tag](https://raw.github.com/johankasperi/argon-osm-occlusion/master/demo_activated.jpg)
+<img src="https://raw.github.com/johankasperi/argon-osm-occlusion/master/demo_activated.jpg" width="30%"></img>
 
 Status
 -----
